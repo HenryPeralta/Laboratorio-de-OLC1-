@@ -33,10 +33,10 @@ class AnalizadorLexico:
             self.columna += 1
 
             if self.estado == 0:
-                if actual.isalpha(): #es una letra
+                if actual.isalpha():
                     self.auxlex += actual
                     self.estado = 1
-                elif actual.isdigit(): #es un digito
+                elif actual.isdigit():
                     self.auxlex += actual
                     self.estado = 2
                 elif actual == '"':

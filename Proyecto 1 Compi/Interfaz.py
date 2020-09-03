@@ -4,6 +4,7 @@ import sys
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb
 from AnalizadorLexico import AnalizadorLexico
+from AnalizadorLexicoCSS import AnalizadorLexicoCss
 import os
 
 class aplicacion:
@@ -51,9 +52,6 @@ class aplicacion:
             self.scrolledtext1.delete("1.0", tk.END)
             self.scrolledtext1.insert("1.0", contenido)
             print(contenido)
-            #analislexico = AnalizadorLexico()
-            #analislexico.analizador(contenido)
-            #analislexico.imprimirTokens()
 
     def nuevo(self):
         self.scrolledtext1.delete("1.0", tk.END)
@@ -61,13 +59,18 @@ class aplicacion:
 aplicacion1=aplicacion()
 
 Prueba = AnalizadorLexico()
-Prueba.analizarArchivo("ejemplo.js")
+PruebaCss = AnalizadorLexicoCss()
+print("----------------Tabla de Tokens----------------")
+#Prueba.analizarArchivo("ejemplo.js")
+PruebaCss.analizarArchivoCss("LexicoCss.css")
 #Prueba.analizarArchivo("Entrada.js")
-Prueba.imprimirListaTokens()
-#analizadorJS.imprimirTokens()
+#Prueba.imprimirListaTokens()
+PruebaCss.imprimirListaTokensCss()
 print("\n")
-Prueba.imprimirListaErrores()
-print("\n\n\n")
+print("----------------Tabla de Errores----------------")
+#Prueba.imprimirListaErrores()
+PruebaCss.imprimirListaErroresCss()
+print("\n")
 
 
 
