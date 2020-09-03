@@ -54,6 +54,8 @@ class AnalizadorLexicoCss:
                         self.estado = -99
 
                         #hola
+                        #adios
+                        
 
             elif self.estado == 3:
                 if actual != '"':
