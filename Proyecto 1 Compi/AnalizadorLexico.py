@@ -1,6 +1,7 @@
 from Tokens import tokens, Tokens
 from Errores import Errores, Error
 import os
+import re
 
 class AnalizadorLexico:
 
@@ -31,7 +32,6 @@ class AnalizadorLexico:
         while contador < len(cadena):
             actual = cadena[contador]
             self.columna += 1
-
             if self.estado == 0:
                 if actual.isalpha():
                     self.auxlex += actual
@@ -131,7 +131,7 @@ class AnalizadorLexico:
                     self.estado = 31
                     
                 else:
-                    if actual == '#':
+                    if actual == '#' and contador == (len(cadena) - 1):
                         print("-------Fin del Analisis Lexico-------")
                     else:
                         self.auxlex += actual
@@ -474,7 +474,11 @@ class AnalizadorLexico:
             print('TOKEN => {}     LEXEMA => {}     FILA => {}     COLUMNA => {}     INDICE => {}'.format(error.getTipo(), error.getAuxlex(), error.getFila(), error.getColumna(), error.getIndice()))
             print("************************************************************************************")
 
+    def generarHtml(self):
+        file = open ("Reportes_Compi/Errores_Lexicos.html", "w")
+        file.close()
 
+        os.system("start ./Reportes_Compi/Errores_Lexicos.html")
 
 
 

@@ -37,6 +37,7 @@ class tokens(Enum):
         Desigualdad_Estricta = 35
         Dos_Puntos = 36
         Diagonal_Inversa = 37
+        Numeral = 38
 
 
 
@@ -134,6 +135,8 @@ class Tokens:
             return "Dos Puntos"
         elif self.tipoDelToken is tokens.Diagonal_Inversa:
             return "Diagonal Inversa"
+        elif self.tipoDelToken is tokens.Numeral:
+            return "Numeral"
         else:
             return "desconocido"
 

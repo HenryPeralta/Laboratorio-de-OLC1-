@@ -29,7 +29,7 @@ class aplicacion:
         opciones1.add_separator()
         opciones1.add_command(label="salir", command=self.salir)
         menubar1.add_cascade(label="Archivo", menu=opciones1)
-        menubar1.add_cascade(label="Ejecutar Analisis")
+        menubar1.add_cascade(label="Ejecutar Analisis", command = self.ejecutarAnalisis)
         menubar1.add_cascade(label="Salir", command=self.salir)
 
     def salir(self):
@@ -56,13 +56,26 @@ class aplicacion:
     def nuevo(self):
         self.scrolledtext1.delete("1.0", tk.END)
 
+    def ejecutarAnalisis(self):
+        Prueba = AnalizadorLexico()
+        print("----------------Tabla de Tokens----------------")
+        Prueba.analizador(self.scrolledtext1.get("1.0", tk.END))
+        Prueba.imprimirListaTokens()
+        print("\n")
+        print("----------------Tabla de Errores----------------")
+        Prueba.imprimirListaErrores()
+        print("\n")
+        Prueba.generarHtml()
+
+
+
 aplicacion1=aplicacion()
 
-Prueba = AnalizadorLexico()
+#Prueba = AnalizadorLexico()
 PruebaCss = AnalizadorLexicoCss()
+PruebaCss.analizarArchivoCss("LexicoCss.css")
 print("----------------Tabla de Tokens----------------")
 #Prueba.analizarArchivo("ejemplo.js")
-PruebaCss.analizarArchivoCss("LexicoCss.css")
 #Prueba.analizarArchivo("Entrada.js")
 #Prueba.imprimirListaTokens()
 PruebaCss.imprimirListaTokensCss()
