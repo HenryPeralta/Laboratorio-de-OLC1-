@@ -34,9 +34,10 @@ class AnalizadorLexicoCss:
             self.columna += 1
 
             if self.estado == 0:
-                if actual.isalpha(): #es una letra
+                if actual.isalpha():
                     self.auxlex += actual
                     self.estado = 1
+                    print("Estado S0 -> S1 con una Letra " + actual)
                 elif actual.isdigit(): #es un digito
                     self.auxlex += actual
                     self.estado = 2
@@ -112,22 +113,29 @@ class AnalizadorLexicoCss:
                 if actual.isalpha() or actual.isdigit() or actual == "-":
                     self.estado = 1
                     self.auxlex += actual
+                    print("Estado S1 -> S1 con una Letra " + actual)
                 else:
                     if self.auxlex in self.propiedades:
                         self.columna -= 1
                         self.indice += 1
                         self.agragarTokenCss(tokensCss.Propiedad)
                         self.auxlex = ""
+                        print("--> Finalizo en el Estado 1 y es una Propiedad")
+                        print("\n")
                     elif self.auxlex in self.unidades_de_medida:
                         self.columna -= 1
                         self.indice += 1
                         self.agragarTokenCss(tokensCss.Unidades_De_Medida)
                         self.auxlex = ""
+                        print("--> Finalizo en el Estado 1 y es una Unidad De Medida")
+                        print("\n")
                     else:
                         self.columna -= 1
                         self.indice += 1
                         self.agragarTokenCss(tokensCss.Identificador)
                         self.auxlex = ""
+                        print("--> Finalizo en el Estado 1 y es un Identificador")
+                        print("\n")
                     contador -= 1
 
             elif self.estado == 2:

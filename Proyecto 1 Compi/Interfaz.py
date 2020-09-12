@@ -51,7 +51,6 @@ class aplicacion:
             archi1.close()
             self.scrolledtext1.delete("1.0", tk.END)
             self.scrolledtext1.insert("1.0", contenido)
-            print(contenido)
 
     def nuevo(self):
         self.scrolledtext1.delete("1.0", tk.END)
@@ -66,6 +65,12 @@ class aplicacion:
         Prueba.imprimirListaErrores()
         print("\n")
         Prueba.generarHtml()
+        Prueba.generarErrores()
+        print("")
+        self.scrolledtext2.insert(tk.END, Prueba.guardarcomentario)
+        self.scrolledtext2.config(fg="yellow")
+
+        
 
 
 
