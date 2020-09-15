@@ -1,6 +1,7 @@
 from TokensCSS import tokensCss, TokensCss
 from ErroresCSS import ErroresCss, ErrorCss
 import os
+import re
 
 class AnalizadorLexicoCss:
 

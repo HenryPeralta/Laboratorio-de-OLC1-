@@ -1,5 +1,6 @@
 from Tokens import tokens, Tokens
 from Errores import Errores, Error
+from arbol import tokensArbol, TokensArbol
 import os
 import re
 import pathlib
@@ -17,6 +18,7 @@ class AnalizadorLexico:
         self.indiceError = 0
         self.palabrasreservadas = ["var", "for", "while", "if", "else", "do", "continue", "break", "return", "function", "constructor", "class", "Math.pow", "true", "false"]
         self.sin_errores = ""
+        self.lista_arbol = []
     
     def agragarToken(self, tipoDelToken):
         self.lista_de_tokens.append(Tokens(tipoDelToken, self.auxlex, self.fila, self.columna,self.indice))
@@ -30,6 +32,9 @@ class AnalizadorLexico:
         self.auxlex= ""
         self.estado = 0
 
+    def agregar_al_arbol(self, tipoDelToken):
+        self.lista_arbol.append(TokensArbol(tipoDelToken))
+
     def analizador(self, entrada):
         cadena = entrada + "#"
         contador = 0
@@ -38,6 +43,9 @@ class AnalizadorLexico:
             self.columna += 1
             if self.estado == 0:
                 if actual.isalpha():
+                    self.auxlex += actual
+                    self.estado = 1
+                elif actual == '_':
                     self.auxlex += actual
                     self.estado = 1
                 elif actual.isdigit():
@@ -68,34 +76,42 @@ class AnalizadorLexico:
                     self.auxlex += actual
                     self.indice +=1
                     self.agragarToken(tokens.Signo_por)
+                    self.agregar_al_arbol(tokensArbol.Signo_por)
                 elif actual == ';':
                     self.auxlex += actual
                     self.indice +=1
                     self.agragarToken(tokens.PuntoYComa)
+                    self.agregar_al_arbol(tokensArbol.PuntoYComa)
                 elif actual == ':':
                     self.auxlex += actual
                     self.indice +=1
                     self.agragarToken(tokens.Dos_Puntos)
+                    self.agregar_al_arbol(tokensArbol.Dos_Puntos)
                 elif actual == "\\":
                     self.auxlex += actual
                     self.indice +=1
                     self.agragarToken(tokens.Diagonal_Inversa)
+                    self.agregar_al_arbol(tokensArbol.Diagonal_Inversa)
                 elif actual == '(':
                     self.auxlex += actual
                     self.indice +=1
                     self.agragarToken(tokens.Parentesis_Abierto)
+                    self.agregar_al_arbol(tokensArbol.Parentesis_Abierto)
                 elif actual == ')':
                     self.auxlex += actual
                     self.indice +=1
                     self.agragarToken(tokens.Parentesis_Cerrado)
+                    self.agregar_al_arbol(tokensArbol.Parentesis_Cerrado)
                 elif actual == '{':
                     self.auxlex += actual
                     self.indice +=1
                     self.agragarToken(tokens.Llave_Abierta)
+                    self.agregar_al_arbol(tokensArbol.Llave_Abierta)
                 elif actual == '}':
                     self.auxlex += actual
                     self.indice +=1
                     self.agragarToken(tokens.Llave_Cerrada)
+                    self.agregar_al_arbol(tokensArbol.Llave_Cerrada)
                 elif actual == '>':
                     self.auxlex += actual
                     self.estado = 17
@@ -106,6 +122,7 @@ class AnalizadorLexico:
                     self.auxlex += actual
                     self.indice +=1
                     self.agragarToken(tokens.Punto)
+                    self.agregar_al_arbol(tokensArbol.Punto)
                 elif actual == '+':
                     self.auxlex += actual
                     self.estado = 13
@@ -116,14 +133,17 @@ class AnalizadorLexico:
                     self.auxlex += actual
                     self.indice +=1
                     self.agragarToken(tokens.Corchete_Abierto)
+                    self.agregar_al_arbol(tokensArbol.Corchete_Abierto)
                 elif actual == ']':
                     self.auxlex += actual
                     self.indice +=1
                     self.agragarToken(tokens.Corchete_Cerrado)
+                    self.agregar_al_arbol(tokensArbol.Corchete_Cerrado)
                 elif actual == ',':
                     self.auxlex += actual
                     self.indice +=1
                     self.agragarToken(tokens.Coma)
+                    self.agregar_al_arbol(tokensArbol.Coma)
                 elif actual == '&':
                     self.auxlex += actual
                     self.estado = 23
@@ -153,11 +173,13 @@ class AnalizadorLexico:
                         self.columna -= 1
                         self.indice += 1
                         self.agragarToken(tokens.Palabra_Reservada)
+                        self.agregar_al_arbol(tokensArbol.Identificador)
                         self.auxlex = ""
                     else:
                         self.columna -= 1
                         self.indice += 1
                         self.agragarToken(tokens.Identificador)
+                        self.agregar_al_arbol(tokensArbol.Identificador)
                         self.auxlex = ""
                     contador -= 1
 
@@ -172,6 +194,7 @@ class AnalizadorLexico:
                     self.columna -= 1
                     self.indice += 1
                     self.agragarToken(tokens.Digito)
+                    self.agregar_al_arbol(tokensArbol.Digito)
                     self.auxlex = ""
                     contador -= 1
 
@@ -195,6 +218,7 @@ class AnalizadorLexico:
                     self.columna -= 1
                     self.indice += 1
                     self.agragarToken(tokens.Numero_Decimal)
+                    self.agregar_al_arbol(tokensArbol.Numero_Decimal)
                     self.auxlex = ""
                     contador -= 1
 
@@ -214,6 +238,7 @@ class AnalizadorLexico:
                     self.columna -= 1
                     self.indice += 1
                     self.agragarToken(tokens.Cadena)
+                    self.agregar_al_arbol(tokensArbol.Cadena)
                     self.auxlex = ""
                     contador -= 1
 
@@ -227,7 +252,8 @@ class AnalizadorLexico:
                 else: 
                     self.columna -= 1
                     self.indice += 1
-                    self.agragarToken(tokens.Signo_Division)
+                    self.agragarToken(tokens.Diagonal)
+                    self.agregar_al_arbol(tokensArbol.Diagonal)
                     self.auxlex = ""
                     contador -= 1
 
@@ -241,6 +267,7 @@ class AnalizadorLexico:
 
             elif self.estado == 9:
                     print("------->"+ self.auxlex)
+                    self.agregar_al_arbol(tokensArbol.Comentario_Unilinea)
                     self.sin_errores += self.auxlex
                     self.auxlex = ""
                     self.fila += 1
@@ -278,6 +305,7 @@ class AnalizadorLexico:
 
             elif self.estado == 12:
                     print("------->"+ self.auxlex)
+                    self.agregar_al_arbol(tokensArbol.Comentario_Multilinea)
                     self.sin_errores += self.auxlex
                     self.auxlex = ""
                     self.columna -= 1
@@ -292,6 +320,7 @@ class AnalizadorLexico:
                     self.columna -= 1
                     self.indice += 1
                     self.agragarToken(tokens.Signo_Mas)
+                    self.agregar_al_arbol(tokensArbol.Signo_Mas)
                     self.auxlex = ""
                     contador -= 1
 
@@ -310,6 +339,7 @@ class AnalizadorLexico:
                     self.columna -= 1
                     self.indice += 1
                     self.agragarToken(tokens.Signo_Menos)
+                    self.agregar_al_arbol(tokensArbol.Signo_Menos)
                     self.auxlex = ""
                     contador -= 1
 
@@ -328,6 +358,7 @@ class AnalizadorLexico:
                     self.columna -= 1
                     self.indice += 1
                     self.agragarToken(tokens.Mayor_que)
+                    self.agregar_al_arbol(tokensArbol.Mayor_que)
                     self.auxlex = ""
                     contador -= 1
 
@@ -346,6 +377,7 @@ class AnalizadorLexico:
                     self.columna -= 1
                     self.indice += 1
                     self.agragarToken(tokens.Menor_que)
+                    self.agregar_al_arbol(tokensArbol.Menor_que)
                     self.auxlex = ""
                     contador -= 1
 
@@ -364,6 +396,7 @@ class AnalizadorLexico:
                     self.columna -= 1
                     self.indice += 1
                     self.agragarToken(tokens.Signo_Igual)
+                    self.agregar_al_arbol(tokensArbol.Signo_Igual)
                     self.auxlex = ""
                     contador -= 1
 
@@ -394,6 +427,7 @@ class AnalizadorLexico:
                     self.columna -= 1
                     self.indice += 1
                     self.agragarToken(tokens.And)
+                    self.agregar_al_arbol(tokensArbol.And)
                     self.auxlex = ""
                     contador -= 1
 
@@ -413,6 +447,7 @@ class AnalizadorLexico:
                     self.columna -= 1
                     self.indice += 1
                     self.agragarToken(tokens.Or)
+                    self.agregar_al_arbol(tokensArbol.Or)
                     self.auxlex = ""
                     contador -= 1
 
@@ -463,7 +498,8 @@ class AnalizadorLexico:
             elif self.estado == 32:
                     self.columna -= 1
                     self.indice += 1
-                    self.agragarToken(tokens.Cadena)
+                    self.agragarToken(tokens.Caracter)
+                    self.agregar_al_arbol(tokensArbol.Caracter)
                     self.auxlex = ""
                     contador -= 1
                     
@@ -494,6 +530,12 @@ class AnalizadorLexico:
             print("************************************************************************************")
             print('TOKEN => {}     LEXEMA => {}     FILA => {}     COLUMNA => {}     INDICE => {}'.format(error.getTipo(), error.getAuxlex(), error.getFila(), error.getColumna(), error.getIndice()))
             print("************************************************************************************")
+
+    def imprimirListaTokensArbol(self):
+        for token in self.lista_arbol:
+            print("------------------------------------------------------------------------------------")
+            print('Token = {}'.format(token.getTipo()))
+            print("------------------------------------------------------------------------------------")
 
     def imprimirLista(self):
         for token in self.lista_de_tokens:
@@ -927,6 +969,231 @@ class AnalizadorLexico:
         self.variables = re.findall(r'var [a-zA-Z_][a-zA-Z0-9_]*',self.sin_errores)
         for i in range(0,len(self.variables)):
             self.variables[i] = self.variables[i].replace("var ","")
+
+    def generarArbol(self):
+        file = open ("C:/Reportes_Compi/Grafo.dot", "w")
+        file.write("digraph G{ \n")
+        file.write("node[style="+"filled,"+"fillcolor="+"yellow,"+"shape="+"circle"+"] \n")
+        file.write("node0[label="+"S0"+"] \n")
+        contador = 1
+        verificando_identificador = True
+        verificando_digito = True
+        verificando_decimal = True
+        verificando_cadena = True
+        verificando_Signo_Igual = True
+        verificando_Diagonal = True
+        verificando_por = True
+        verificando_puntoycoma = True
+        verificando_dos_puntos = True
+        verificando_diagonal_inversa = True
+        verificando_parentesis_abierto = True
+        verificando_parentesis_cerrado = True
+        verificando_llave_abierta = True
+        verificando_llave_cerrada = True
+        verificando_mayor_que = True
+        verificando_menor_que = True
+        verificando_punto = True
+        verificando_signo_mas = True
+        verificando_signo_menos = True
+        verificando_corchete_abierto = True
+        verificando_corchete_cerrado = True
+        verificando_coma = True
+        verificando_and = True
+        verificando_or = True
+        verificando_caracter = True
+        verificando_comentario_unilinea = True
+        verificando_comentario_multilinea = True
+        for recorrido in self.lista_arbol:
+            #while verificando:
+                if recorrido.getTipo() == "Identificador":
+                    while verificando_identificador:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} Identificador\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"letra | _"))
+                        file.write("    node{0}->node{0}[label=\"{1}\"];\n".format(contador,"letra | _ | digito"))
+                        verificando_identificador = False
+                    #file.write("    node", contador , "[shape="+"doublecircule,"+"label= S", contador ," Identificador]; \n")
+                    #file.write("    node1->node" , contador , "[label =","Letra| -" ,"]; \n")
+                    #file.write("    node",contador,"->node",contador, "[label =","Letra| - | Digito" ,"]; \n")
+                elif recorrido.getTipo() == "Numero Entero":
+                    while verificando_digito:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Numero Entero\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"digito"))
+                        file.write("    node{0}->node{0}[label=\"{1}\"];\n".format(contador,"digito"))
+                        verificando_digito = False
+                elif recorrido.getTipo() == "Numero Decimal":
+                    while verificando_decimal:
+                        file.write("    node{0}[label=\"{0}\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"digito"))
+                        file.write("    node{0}->node{0}[label=\"{1}\"];\n".format(contador,"digito"))
+                        contador += 1
+                        file.write("    node{0}[label=\"{0}\"];\n".format(contador))
+                        file.write("    node{}->node{}[label=\"{}\"];\n".format(contador-1,contador,"punto"))
+                        contador += 1
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"{0} - Numero Decimal\"];\n".format(contador))
+                        file.write("    node{}->node{}[label=\"{}\"];\n".format(contador-1,contador,"digito"))
+                        file.write("    node{0}->node{0}[label=\"{1}\"];\n".format(contador,"digito"))
+                        verificando_decimal = False
+                elif recorrido.getTipo() == "Cadena":
+                    while verificando_cadena:
+                        file.write("    node{0}[label=\"{0}\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"\\\""))
+                        file.write("    node{0}->node{0}[label=\"{1}\"];\n".format(contador,"Caracter"))
+                        contador += 1
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"{0} - Cadena\"];\n".format(contador))
+                        file.write("    node{}->node{}[label=\"{}\"];\n".format(contador-1,contador,"\\\""))
+                        verificando_cadena = False
+                elif recorrido.getTipo() == "Signo Igual":
+                    while verificando_Signo_Igual:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Signo Igual\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"="))
+                        verificando_Signo_Igual = False
+                elif recorrido.getTipo() == "Diagonal":
+                    while verificando_Diagonal:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Diagonal\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"/"))
+                        verificando_Diagonal = False
+                elif recorrido.getTipo() == "Signo Por":
+                    while verificando_por:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Signo Por\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"*"))
+                        verificando_por = False
+                elif recorrido.getTipo() == "Punto y Coma":
+                    while verificando_puntoycoma:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Punto y Coma\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,";"))
+                        verificando_puntoycoma = False
+                elif recorrido.getTipo() == "Dos Puntos":
+                    while verificando_dos_puntos:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Dos Puntos\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,":"))
+                        verificando_dos_puntos = False
+                elif recorrido.getTipo() == "Diagonal Inversa":
+                    while verificando_diagonal_inversa:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Diagonal Inversa\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"diagonal Inversa"))
+                        verificando_diagonal_inversa = False
+                elif recorrido.getTipo() == "Parentesis Abierto":
+                    while verificando_parentesis_abierto:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Parentesis Abierto\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"("))
+                        verificando_parentesis_abierto = False
+                elif recorrido.getTipo() == "Parentesis Cerrado":
+                    while verificando_parentesis_cerrado:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Parentesis Cerrado\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,")"))
+                        verificando_parentesis_cerrado = False
+                elif recorrido.getTipo() == "Llave Abierta":
+                    while verificando_llave_abierta:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Llave Abierta\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"{"))
+                        verificando_llave_abierta = False
+                elif recorrido.getTipo() == "Llave Cerrada":
+                    while verificando_llave_cerrada:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Llave Cerrada\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"}"))
+                        verificando_llave_cerrada = False
+                elif recorrido.getTipo() == "Mayor Que":
+                    while verificando_mayor_que:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Mayor que\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,">"))
+                        verificando_mayor_que = False
+                elif recorrido.getTipo() == "Menor Que":
+                    while verificando_menor_que:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Menor que\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"<"))
+                        verificando_menor_que = False
+                elif recorrido.getTipo() == "Punto":
+                    while verificando_punto:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Punto\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"Punto"))
+                        verificando_punto = False
+                elif recorrido.getTipo() == "Signo Mas":
+                    while verificando_signo_mas:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Signo Mas\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"+"))
+                        verificando_signo_mas = False
+                elif recorrido.getTipo() == "Signo Menos":
+                    while verificando_signo_menos:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Signo Menos\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"-"))
+                        verificando_signo_menos = False
+                elif recorrido.getTipo() == "Corchete Abierto":
+                    while verificando_corchete_abierto:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Corchete Abierto\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"["))
+                        verificando_corchete_abierto = False
+                elif recorrido.getTipo() == "Corchete Cerrado":
+                    while verificando_corchete_cerrado:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Corchete Cerrado\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"]"))
+                        verificando_corchete_cerrado = False
+                elif recorrido.getTipo() == "Coma":
+                    while verificando_coma:
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"S{0} - Coma\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,","))
+                        verificando_coma = False
+                elif recorrido.getTipo() == "And":
+                    while verificando_and:
+                        file.write("    node{0}[label=\"{0}\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"&"))
+                        contador += 1
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"{0} - And\"];\n".format(contador))
+                        file.write("    node{}->node{}[label=\"{}\"];\n".format(contador-1,contador,"&"))
+                        verificando_and = False
+                elif recorrido.getTipo() == "Or":
+                    while verificando_or:
+                        file.write("    node{0}[label=\"{0}\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"|"))
+                        contador += 1
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"{0} - And\"];\n".format(contador))
+                        file.write("    node{}->node{}[label=\"{}\"];\n".format(contador-1,contador,"|"))
+                        verificando_or = False
+                elif recorrido.getTipo() == "Caracter":
+                    while verificando_caracter:
+                        file.write("    node{0}[label=\"{0}\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"\\\'"))
+                        file.write("    node{0}->node{0}[label=\"{1}\"];\n".format(contador,"Caracter"))
+                        contador += 1
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"{0} - Caracter\"];\n".format(contador))
+                        file.write("    node{}->node{}[label=\"{}\"];\n".format(contador-1,contador,"\\\'"))
+                        verificando_caracter = False
+                elif recorrido.getTipo() == "Comentario Unilinea":
+                    while verificando_comentario_unilinea:
+                        file.write("    node{0}[label=\"{0}\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"/"))
+                        contador += 1
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"{0} - Comentario Unilinea\"];\n".format(contador))
+                        file.write("    node{}->node{}[label=\"{}\"];\n".format(contador-1,contador,"/"))
+                        file.write("    node{0}->node{0}[label=\"{1}\"];\n".format(contador,"Caracter"))
+                        verificando_comentario_unilinea = False
+                elif recorrido.getTipo() == "Comentario Multilinea":
+                    while verificando_comentario_multilinea:
+                        file.write("    node{0}[label=\"{0}\"];\n".format(contador))
+                        file.write("    node0->node{}[label=\"{}\"];\n".format(contador,"/"))
+                        contador += 1
+                        file.write("    node{0}[label=\"{0}\"];\n".format(contador))
+                        file.write("    node{}->node{}[label=\"{}\"];\n".format(contador-1,contador,"*"))
+                        file.write("    node{0}->node{0}[label=\"{1}\"];\n".format(contador,"Caracter"))
+                        contador += 1
+                        file.write("    node{0}[label=\"{0}\"];\n".format(contador))
+                        file.write("    node{}->node{}[label=\"{}\"];\n".format(contador-1,contador,"*"))
+                        contador += 1
+                        file.write("    node{0}[shape=\"doublecircle\", label=\"{0} - Comentario Multulinea\"];\n".format(contador))
+                        file.write("    node{}->node{}[label=\"{}\"];\n".format(contador-1,contador,"/"))
+                        verificando_comentario_multilinea = False
+                #else:
+                #else:
+                    #file.write("    node{0}[shape=\"doublecircle\", label=\"{0}\"];\n".format(contador))
+                    #file.write("    node0->node{}[label=\"{}\"];\n".format(contador,recorrido))
+                    #file.write("    node"+contador+"[shape="+"doublecircle,"+ "label="+contador+"];\n")
+                    #file.write("    node1->node"+contador+"[label="+contador+"];\n")
+                contador += 1
+        file.write("}")
+        file.close()
+
+        os.system("dot -Tpng C:/Reportes_Compi/Grafo.dot -o C:/Reportes_Compi/Grafo.png")
+        os.system("start C:/Reportes_Compi/Grafo.png")
+
 
 
 

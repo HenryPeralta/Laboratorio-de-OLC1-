@@ -2,27 +2,25 @@ from enum import Enum
 
 class tokensHtml(Enum):
     Identificador = 1
-    Comentario_Unilinea = 2
-    Comentario_Multilinea = 3
-    Signo_Division = 4
-    Cadena = 5
-    Propiedad = 6
-    Signo_Por = 7
-    Numeral = 8
-    Punto = 9
-    Digito = 10
-    Numero_Decimal = 11
-    Dos_Puntos = 12
-    Llave_Abierta = 13
-    Llave_Cerrada = 14
-    PuntoYComa = 15
-    Guion = 16
-    Unidades_De_Medida = 17
-    Porcentaje = 18
-    Hexadecimal = 19
-    Parentesis_Abierto = 20
-    Parentesis_Cerrado = 21
-    Coma = 22 
+    Digito = 2
+    Cadena = 3
+    Palabras_Reservada = 4
+    Titulos = 5
+    Etiquetas = 6
+    Numero_Decimal = 7
+    Parrafo = 8
+    Hipervinculo = 9
+    Propiedades = 10
+    Unidades_de_Medida = 11
+    Lista = 12
+    Mayor_Que = 13
+    Menor_Que = 14
+    Diagonal = 15
+    Punto = 16
+    Igual = 17
+    Parentesis_Abierto = 18
+    Parentesis_Cerrado = 19
+
 
 class TokensHtml:
 
@@ -47,48 +45,42 @@ class TokensHtml:
 
     def getTipo(self):
         if self.tipoDelToken is tokensHtml.Identificador:
-            return "Identificador"
-        elif self.tipoDelToken is tokensHtml.Comentario_Unilinea:
-            return "Comentario Unilinea"
-        elif self.tipoDelToken is tokensHtml.Comentario_Multilinea:
-            return "Comentario Multilinea"
-        elif self.tipoDelToken is tokensHtml.Cadena:
-            return "Cadena"
-        elif self.tipoDelToken is tokensHtml.Signo_Division:
-            return "Signo Division"
-        elif self.tipoDelToken is tokensHtml.Propiedad:
-            return "Propiedad"
-        elif self.tipoDelToken is tokensHtml.Signo_Por:
-            return "Signo Por"
-        elif self.tipoDelToken is tokensHtml.Numeral:
-            return "Numeral"  
-        elif self.tipoDelToken is tokensHtml.Punto:
-            return "Punto"   
+            return "Identificador" 
         elif self.tipoDelToken is tokensHtml.Digito:
             return "Digito"
+        elif self.tipoDelToken is tokensHtml.Cadena:
+            return "Cadena"
+        elif self.tipoDelToken is tokensHtml.Palabras_Reservada:
+            return "Palabra Reservada"  
+        elif self.tipoDelToken is tokensHtml.Titulos:
+            return "Titulos"  
+        elif self.tipoDelToken is tokensHtml.Etiquetas:
+            return "Etiqutas"
         elif self.tipoDelToken is tokensHtml.Numero_Decimal:
             return "Numero Decimal"  
-        elif self.tipoDelToken is tokensHtml.Dos_Puntos:
-            return "Dos Puntos" 
-        elif self.tipoDelToken is tokensHtml.Llave_Abierta:
-            return "Llave Abierta"
-        elif self.tipoDelToken is tokensHtml.Llave_Cerrada:
-            return "Llave Cerrada" 
-        elif self.tipoDelToken is tokensHtml.PuntoYComa:
-            return "Punto y Coma" 
-        elif self.tipoDelToken is tokensHtml.Guion:
-            return "Guion" 
-        elif self.tipoDelToken is tokensHtml.Unidades_De_Medida:
-            return "Unidad De Medida"     
-        elif self.tipoDelToken is tokensHtml.Porcentaje:
-            return "Porcentaje"  
-        elif self.tipoDelToken is tokensHtml.Hexadecimal:
-            return "Hexadecimal" 
+        elif self.tipoDelToken is tokensHtml.Parrafo:
+            return "Parrafo" 
+        elif self.tipoDelToken is tokensHtml.Hipervinculo:
+            return "Hipervinculo"
+        elif self.tipoDelToken is tokensHtml.Propiedades:
+            return "Propiedad"
+        elif self.tipoDelToken is tokensHtml.Unidades_de_Medida:
+            return "Unidades de Medida"   
+        elif self.tipoDelToken is tokensHtml.Lista:
+            return "Lista" 
+        elif self.tipoDelToken is tokensHtml.Mayor_Que:
+            return "Mayor Que"
+        elif self.tipoDelToken is tokensHtml.Menor_Que:
+            return "Menor Que"   
+        elif self.tipoDelToken is tokensHtml.Diagonal:
+            return "Diagonal"     
+        elif self.tipoDelToken is tokensHtml.Punto:
+            return "Punto"  
+        elif self.tipoDelToken is tokensHtml.Igual:
+            return "Igual"
         elif self.tipoDelToken is tokensHtml.Parentesis_Abierto:
             return "Parentesis Abierto"
         elif self.tipoDelToken is tokensHtml.Parentesis_Cerrado:
-            return "Parentesis Cerrado"
-        elif self.tipoDelToken is tokensHtml.Coma:
-            return "Coma"                  
+            return "Parentesis Cerrado"                
         else:
             return "desconocido"   

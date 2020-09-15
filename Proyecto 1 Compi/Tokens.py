@@ -22,7 +22,7 @@ class tokens(Enum):
         Corchete_Abierto = 19
         Corchete_Cerrado = 20
         Coma = 21
-        Signo_Division = 22
+        Diagonal = 22
         Igual = 23
         And = 24
         Or = 25
@@ -33,11 +33,12 @@ class tokens(Enum):
         Menor_Igual_Que = 30
         No = 31
         No_Es_Igual = 32
-        Igualdad_Estricta = 34
-        Desigualdad_Estricta = 35
-        Dos_Puntos = 36
-        Diagonal_Inversa = 37
-        Numeral = 38
+        Igualdad_Estricta = 33
+        Desigualdad_Estricta = 34
+        Dos_Puntos = 35
+        Diagonal_Inversa = 36
+        Numeral = 37
+        Caracter = 38
 
 
 
@@ -105,8 +106,8 @@ class Tokens:
             return "Corchete Cerrado"
         elif self.tipoDelToken is tokens.Coma:
             return "Coma"
-        elif self.tipoDelToken is tokens.Signo_Division:
-            return "Signo Divison"
+        elif self.tipoDelToken is tokens.Diagonal:
+            return "Diagonal"
         elif self.tipoDelToken is tokens.Igual:
             return "Igual"
         elif self.tipoDelToken is tokens.And:
@@ -137,6 +138,8 @@ class Tokens:
             return "Diagonal Inversa"
         elif self.tipoDelToken is tokens.Numeral:
             return "Numeral"
+        elif self.tipoDelToken is tokens.Caracter:
+            return "Caracter"
         else:
             return "desconocido"
 

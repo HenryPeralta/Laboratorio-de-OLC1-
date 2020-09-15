@@ -5,6 +5,7 @@ from tkinter import filedialog as fd
 from tkinter import messagebox as mb
 from AnalizadorLexico import AnalizadorLexico
 from AnalizadorLexicoCSS import AnalizadorLexicoCss
+from AnalizadorLexicoHtml import AnalizadorLexicoHtml
 import os
 
 class aplicacion:
@@ -34,6 +35,7 @@ class aplicacion:
         menubar1.add_cascade(label="Archivo", menu=opciones1)
         opciones2.add_command(label="Archivos .js", command=self.ejecutarAnalisis)
         opciones2.add_command(label="Archivos .css", command=self.ejecutarAnalisisCss)
+        opciones2.add_command(label="Archivos .html", command=self.ejecutarAnalisisHtml)
         menubar1.add_cascade(label="Ejecutar Analisis", menu=opciones2)
         menubar1.add_cascade(label="Salir", command=self.salir)
 
@@ -69,8 +71,9 @@ class aplicacion:
         print("----------------Tabla de Errores----------------")
         Prueba.imprimirListaErrores()
         print("\n")
-        Prueba.generarHtml()
-        Prueba.generarErrores()
+        #Prueba.generarHtml()
+        #Prueba.generarErrores()
+        Prueba.generarArbol()
         self.salida.delete("1.0", tk.END)
         self.salida.insert(tk.END, Prueba.sin_errores)
         #self.scrolledtext2.config(fg="yellow")
@@ -92,24 +95,49 @@ class aplicacion:
         self.consola.insert(tk.END, Tipocss.salida_consola)
         #self.scrolledtext2.config(fg="yellow")
 
+    def ejecutarAnalisisHtml(self):
+        Tipo_html = AnalizadorLexicoHtml()
+        print("----------------Tabla de Tokens----------------")
+        Tipo_html.analizadorHtml(self.entrada.get("1.0", tk.END))
+        Tipo_html.imprimirListaTokensHtml()
+        print("\n")
+        print("----------------Tabla de Errores----------------")
+        Tipo_html.imprimirListaErroresHtml()
+        print("\n")
+        Tipo_html.generarHtml_Html()
+        Tipo_html.generarErrores_Html()
+        self.salida.delete("1.0", tk.END)
+        self.salida.insert(tk.END, Tipo_html.sin_errores)
+        self.consola.delete("1.0", tk.END)
+        #self.scrolledtext2.config(fg="yellow")
+
         
 
 aplicacion1=aplicacion()
 
-#Prueba = AnalizadorLexico()
+Prueba = AnalizadorLexico()
 #PruebaCss = AnalizadorLexicoCss()
+#prueba_html = AnalizadorLexicoHtml()
+#prueba_html.analizarArchivoHtml("Ejemplo_Html.html")
 #PruebaCss.analizarArchivoCss("LexicoCss.css")
-#print("----------------Tabla de Tokens----------------")
+Prueba.analizarArchivo("ejemplo.js")
+print("----------------Tabla de Tokens Arbol----------------")
 #Prueba.analizarArchivo("ejemplo.js")
 #Prueba.analizarArchivo("Entrada.js")
-#Prueba.imprimirListaTokens()
+#prueba_html.imprimirListaTokensHtml()
+Prueba.imprimirListaTokensArbol()
 #PruebaCss.imprimirListaTokensCss()
 #print("\n")
 #print("----------------Tabla de Errores----------------")
 #Prueba.imprimirListaErrores()
 #PruebaCss.imprimirListaErroresCss()
+#prueba_html.imprimirListaErroresHtml()
 #print("\n")
 
+ded = 12
+print("hola",ded,"adios")
+print("hola{}".format(ded))
+print("gogog"+"djdjd")
 
 
 
