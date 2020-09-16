@@ -6,6 +6,7 @@ from tkinter import messagebox as mb
 from AnalizadorLexico import AnalizadorLexico
 from AnalizadorLexicoCSS import AnalizadorLexicoCss
 from AnalizadorLexicoHtml import AnalizadorLexicoHtml
+from Analisadorsintactico import AnalizadorLexicoSintactico
 import os
 
 class aplicacion:
@@ -36,6 +37,7 @@ class aplicacion:
         opciones2.add_command(label="Archivos .js", command=self.ejecutarAnalisis)
         opciones2.add_command(label="Archivos .css", command=self.ejecutarAnalisisCss)
         opciones2.add_command(label="Archivos .html", command=self.ejecutarAnalisisHtml)
+        opciones2.add_command(label="Archivos .Rmtl", command=self.ejecutarAnalisisSintactico)
         menubar1.add_cascade(label="Ejecutar Analisis", menu=opciones2)
         menubar1.add_cascade(label="Salir", command=self.salir)
 
@@ -111,33 +113,55 @@ class aplicacion:
         self.consola.delete("1.0", tk.END)
         #self.scrolledtext2.config(fg="yellow")
 
+    def ejecutarAnalisisSintactico(self):
+        Tipo_Sintactico = AnalizadorLexicoSintactico()
+        print("----------------Tabla de Tokens----------------")
+        Tipo_Sintactico.analizadorSintactico(self.entrada.get("1.0", tk.END))
+        Tipo_Sintactico.imprimirListaTokensSintactico()
+        print("\n")
+        print("----------------Tabla de Errores----------------")
+        Tipo_Sintactico.imprimirListaErroresSintactico()
+        print("\n")
+        Tipo_Sintactico.inicio_sintactico()
+        #Tipo_Sintactico.generarHtml_Sintactico()
+        #Tipo_Sintactico.generarErrores_Sintactico()
+        self.salida.delete("1.0", tk.END)
+        self.salida.insert(tk.END, Tipo_Sintactico.respuesta)
+        self.consola.delete("1.0", tk.END)
+        #self.scrolledtext2.config(fg="yellow")
+
         
 
 aplicacion1=aplicacion()
 
-Prueba = AnalizadorLexico()
+#Prueba = AnalizadorLexico()
 #PruebaCss = AnalizadorLexicoCss()
 #prueba_html = AnalizadorLexicoHtml()
+prueba_Sintactico = AnalizadorLexicoSintactico()
 #prueba_html.analizarArchivoHtml("Ejemplo_Html.html")
 #PruebaCss.analizarArchivoCss("LexicoCss.css")
-Prueba.analizarArchivo("ejemplo.js")
+#Prueba.analizarArchivo("ejemplo.js")
+prueba_Sintactico.analizarArchivoSintactico("ejemplosintactico.Rmt")
 print("----------------Tabla de Tokens Arbol----------------")
 #Prueba.analizarArchivo("ejemplo.js")
 #Prueba.analizarArchivo("Entrada.js")
 #prueba_html.imprimirListaTokensHtml()
-Prueba.imprimirListaTokensArbol()
+prueba_Sintactico.imprimirListaErroresSintactico()
+prueba_Sintactico.inicio_sintactico()
+#Prueba.imprimirListaTokensArbol()
 #PruebaCss.imprimirListaTokensCss()
 #print("\n")
-#print("----------------Tabla de Errores----------------")
+print("----------------Tabla de Errores----------------")
 #Prueba.imprimirListaErrores()
 #PruebaCss.imprimirListaErroresCss()
 #prueba_html.imprimirListaErroresHtml()
-#print("\n")
+prueba_Sintactico.imprimirListaTokensSintactico()
+print("\n")
 
-ded = 12
-print("hola",ded,"adios")
-print("hola{}".format(ded))
-print("gogog"+"djdjd")
+#ded = 12
+#print("hola",ded,"adios")
+#print("hola{}".format(ded))
+#print("gogog"+"djdjd")
 
 
 
