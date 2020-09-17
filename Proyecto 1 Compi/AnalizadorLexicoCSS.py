@@ -2,6 +2,7 @@ from TokensCSS import tokensCss, TokensCss
 from ErroresCSS import ErroresCss, ErrorCss
 import os
 import re
+import pathlib
 
 class AnalizadorLexicoCss:
 
@@ -44,7 +45,7 @@ class AnalizadorLexicoCss:
                     self.estado = 1
                     self.salida_consola += "Estado S0 -> S1 con una Letra " + actual + "\n"
                     print("Estado S0 -> S1 con una Letra " + actual)
-                elif actual.isdigit(): #es un digito
+                elif actual.isdigit():
                     self.auxlex += actual
                     self.estado = 2
                     self.salida_consola += "Estado S0 -> S2 con un Digito " + actual + "\n"
@@ -71,7 +72,7 @@ class AnalizadorLexicoCss:
                 elif actual == '-':
                     self.auxlex += actual
                     self.estado = 11
-                    self.salida_consola += "Estado S0 -> S11 con una Diagonal " + actual + "\n"
+                    self.salida_consola += "Estado S0 -> S11 con un Guion " + actual + "\n"
                 elif actual == '*':
                     self.auxlex += actual
                     self.indice +=1
@@ -779,3 +780,16 @@ class AnalizadorLexicoCss:
         file.close()
 
         os.system("start C:/Reportes_Compi/Errores_Lexicos_Css.html")
+
+    def ruta_de_archivo(self, archivo):
+        patron = r'([a-zA-Z]:\\)*(\w+\\)+'
+        ruta = re.search(patron, self.sin_errores)
+        ruta = ruta.group()
+
+        ruta = re.sub(r'[a-zA-Z]:\\','',ruta)
+        ruta = ruta.replace("user\\","")
+        pathlib.Path(ruta).mkdir(parents=True, exist_ok=True)
+
+        file = open(".\\" + ruta + archivo, "w")
+        file.write(self.sin_errores)
+        file.close()

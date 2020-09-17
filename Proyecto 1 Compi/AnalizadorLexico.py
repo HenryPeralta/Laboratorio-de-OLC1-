@@ -953,23 +953,6 @@ class AnalizadorLexico:
 
         os.system("start C:/Reportes_Compi/Errores_Lexicos.html")
 
-    def crearArchivoLimpio(self, nombre_archivo):
-        patron = r'([a-zA-Z]:\\)(\w+\\)+'
-        ruta = re.search(patron, self.sin_errores)
-        ruta = ruta.group()
-
-        ruta = re.sub(r'[a-zA-Z]:\\','',ruta)
-        ruta = ruta.replace("user\\","")
-        pathlib.Path(ruta).mkdir(parents=True, exist_ok=True)
-
-        file = open(".\\" + ruta + nombre_archivo, "w")
-        file.write(self.sin_errores)
-        file.close()
-
-        self.variables = re.findall(r'var [a-zA-Z_][a-zA-Z0-9_]*',self.sin_errores)
-        for i in range(0,len(self.variables)):
-            self.variables[i] = self.variables[i].replace("var ","")
-
     def generarArbol(self):
         file = open ("C:/Reportes_Compi/Grafo.dot", "w")
         file.write("digraph G{ \n")
@@ -1193,6 +1176,19 @@ class AnalizadorLexico:
 
         os.system("dot -Tpng C:/Reportes_Compi/Grafo.dot -o C:/Reportes_Compi/Grafo.png")
         os.system("start C:/Reportes_Compi/Grafo.png")
+
+    def ruta_de_archivo(self, archivo):
+        patron = r'([a-zA-Z]:\\)*(\w+\\)+'
+        ruta = re.search(patron, self.sin_errores)
+        ruta = ruta.group()
+
+        ruta = re.sub(r'[a-zA-Z]:\\','',ruta)
+        ruta = ruta.replace("user\\","")
+        pathlib.Path(ruta).mkdir(parents=True, exist_ok=True)
+
+        file = open(".\\" + ruta + archivo, "w")
+        file.write(self.sin_errores)
+        file.close()
 
 
 

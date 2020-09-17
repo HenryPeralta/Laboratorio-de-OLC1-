@@ -24,6 +24,7 @@ class AnalizadorLexicoHtml:
         self.propiedades = ["color", "background-color", "background-image", "border", "Opacity", "background", "text-align", "font-family", "font-style", "font-weight", "font-size", "font", "padding-left", "padding right", "padding-bottom", "padding-top", "padding", "display", "line-height", "width", "height", "margin-top", "margin-right", "margin-bottom", "margin-left", "margin", "border-style", "display", "position", "bottom", "top", "right", "left", "float", "clear", "max-width", "min-width", "max-heigth", "min-height", "url", "border-top", "content"]
         self.unidades_de_medida = ["px", "em", "vh", "vw", "in", "cm", "mm", "pt", "pc",]
         self.sin_errores = ""
+        self.comentario_html = []
     
     def agragarTokenHtml(self, tipoDelToken):
         self.lista_de_tokens_html.append(TokensHtml(tipoDelToken, self.auxlex, self.fila, self.columna,self.indice))
@@ -74,8 +75,7 @@ class AnalizadorLexicoHtml:
                     self.agragarTokenHtml(tokensHtml.Mayor_Que)
                 elif actual == '<':
                     self.auxlex += actual
-                    self.indice +=1
-                    self.agragarTokenHtml(tokensHtml.Menor_Que)
+                    self.estado = 9
                 elif actual == '/':
                     self.auxlex += actual
                     self.indice +=1
@@ -228,6 +228,48 @@ class AnalizadorLexicoHtml:
                     self.indice += 1
                     self.agragarTokenHtml(tokensHtml.Cadena)
                     self.auxlex = ""
+                    contador -= 1
+
+            elif self.estado == 9:
+                if actual == "!":
+                    self.auxlex += actual
+                    self.estado = 10
+                else: 
+                    self.columna -= 1
+                    self.indice += 1
+                    self.agragarTokenHtml(tokensHtml.Mayor_Que)
+                    self.auxlex = ""
+                    contador -= 1
+
+            elif self.estado == 10:
+                if actual == "-":
+                    self.estado = 11
+                    self.auxlex += actual
+
+            elif self.estado == 11:
+                if actual != "-":
+                    self.estado = 11
+                    self.auxlex += actual
+                    if actual == "\n":
+                        self.columna = 0
+                        self.fila += 1
+                        self.estado = 11
+                else: 
+                    self.auxlex += actual
+                    self.estado = 12
+
+            elif self.estado == 12:
+                if actual == ">":
+                    self.estado = 13
+                    self.auxlex += actual
+
+            elif self.estado == 13:
+                    print("------->"+ self.auxlex)
+                    self.comentario_html.append(self.auxlex)
+                    self.sin_errores += self.auxlex
+                    self.auxlex = ""
+                    self.columna -= 1
+                    self.estado = 0
                     contador -= 1
                     
             elif self.estado == -99:
@@ -669,3 +711,16 @@ class AnalizadorLexicoHtml:
         file.close()
 
         os.system("start C:/Reportes_Compi/Errores_Lexicos_Html.html")
+
+    def ruta_de_archivo(self, archivo):
+        patron = r'([a-zA-Z]:\\)*(\w+\\)+'
+        ruta = re.search(patron, self.sin_errores)
+        ruta = ruta.group()
+
+        ruta = re.sub(r'[a-zA-Z]:\\','',ruta)
+        ruta = ruta.replace("user\\","")
+        pathlib.Path(ruta).mkdir(parents=True, exist_ok=True)
+
+        file = open(".\\" + ruta + archivo, "w")
+        file.write(self.sin_errores)
+        file.close()

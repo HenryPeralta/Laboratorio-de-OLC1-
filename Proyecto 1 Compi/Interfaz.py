@@ -15,12 +15,12 @@ class aplicacion:
         self.ventana1=tk.Tk()
         self.ventana1.title("Analizador Lexico")
         self.agregar_menu()
-        self.entrada=st.ScrolledText(self.ventana1, width=60, height=25)
-        self.entrada.grid(column=0, row=0, padx=10, pady=10)
-        self.salida=st.ScrolledText(self.ventana1, width=60, height=25)
-        self.salida.grid(column=3, row=0, padx=10, pady=10)
-        self.consola=st.ScrolledText(self.ventana1, width=60, height=15)
-        self.consola.grid(column=0, row=6, padx=10, pady=10)
+        self.entrada=st.ScrolledText(self.ventana1, width=65, height=25)
+        self.entrada.grid(column=0, row=0, padx=15, pady=10)
+        self.salida=st.ScrolledText(self.ventana1, width=65, height=25)
+        self.salida.grid(column=3, row=0, padx=15, pady=10)
+        self.consola=st.ScrolledText(self.ventana1, width=75, height=15)
+        self.consola.grid(column=0, row=6, padx=15, pady=10)
         self.ventana1.mainloop()
 
     def agregar_menu(self):
@@ -37,7 +37,7 @@ class aplicacion:
         opciones2.add_command(label="Archivos .js", command=self.ejecutarAnalisis)
         opciones2.add_command(label="Archivos .css", command=self.ejecutarAnalisisCss)
         opciones2.add_command(label="Archivos .html", command=self.ejecutarAnalisisHtml)
-        opciones2.add_command(label="Archivos .Rmtl", command=self.ejecutarAnalisisSintactico)
+        opciones2.add_command(label="Archivos .Rmt", command=self.ejecutarAnalisisSintactico)
         menubar1.add_cascade(label="Ejecutar Analisis", menu=opciones2)
         menubar1.add_cascade(label="Salir", command=self.salir)
 
@@ -53,7 +53,7 @@ class aplicacion:
             mb.showinfo("informacion", "los datos fueron guardados en el archivo.")
 
     def abrir(self):
-        nombrearch=fd.askopenfilename(filetypes = (("js files","*.js"),("css files","*.css"),("html files","*.html"),("todos los archivos","*.*")), defaultextension = ("*.js","*.css",".html"))
+        nombrearch=fd.askopenfilename(filetypes = (("js files","*.js"),("css files","*.css"),("html files","*.html"),("Rmt files","*.Rmt"),("todos los archivos","*.*")), defaultextension = ("*.js","*.css","*.html","*.Rmt"))
         if nombrearch != '':
             archi1=open(nombrearch, "r", encoding="utf-8")
             contenido=archi1.read()
@@ -73,12 +73,20 @@ class aplicacion:
         print("----------------Tabla de Errores----------------")
         Prueba.imprimirListaErrores()
         print("\n")
-        #Prueba.generarHtml()
-        #Prueba.generarErrores()
+        Prueba.generarHtml()
+        Prueba.generarErrores()
         Prueba.generarArbol()
         self.salida.delete("1.0", tk.END)
         self.salida.insert(tk.END, Prueba.sin_errores)
-        #self.scrolledtext2.config(fg="yellow")
+        self.consola.delete("1.0", tk.END)
+        for error in Prueba.listaErrores:
+            self.consola.insert(tk.END, "----------------------------------------------------------------------\n")
+            self.consola.insert(tk.END, 'TOKEN -> {}  LEXEMA -> {}  FILA -> {}  COLUMNA -> {}  INDICE -> {} \n'.format(error.getTipo(), error.getAuxlex(), error.getFila(), error.getColumna(), error.getIndice()))
+            self.consola.insert(tk.END, "----------------------------------------------------------------------\n")
+        Prueba.ruta_de_archivo("Salida_Correcta.js")
+
+        #for error in Prueba.listaErrores:
+            #self.consola.insert(tk.END, error + "\n")
 
     def ejecutarAnalisisCss(self):
         Tipocss = AnalizadorLexicoCss()
@@ -95,6 +103,7 @@ class aplicacion:
         self.salida.insert(tk.END, Tipocss.sin_errores)
         self.consola.delete("1.0", tk.END)
         self.consola.insert(tk.END, Tipocss.salida_consola)
+        Tipocss.ruta_de_archivo("Salida_Correcta.css")
         #self.scrolledtext2.config(fg="yellow")
 
     def ejecutarAnalisisHtml(self):
@@ -111,6 +120,11 @@ class aplicacion:
         self.salida.delete("1.0", tk.END)
         self.salida.insert(tk.END, Tipo_html.sin_errores)
         self.consola.delete("1.0", tk.END)
+        for error in Tipo_html.listaErrores_html:
+            self.consola.insert(tk.END, "----------------------------------------------------------------------\n")
+            self.consola.insert(tk.END, 'TOKEN -> {}  LEXEMA -> {}  FILA -> {}  COLUMNA -> {}  INDICE -> {} \n'.format(error.getTipo(), error.getAuxlex(), error.getFila(), error.getColumna(), error.getIndice()))
+            self.consola.insert(tk.END, "----------------------------------------------------------------------\n")
+        Tipo_html.ruta_de_archivo("Salida_Correcta.html")
         #self.scrolledtext2.config(fg="yellow")
 
     def ejecutarAnalisisSintactico(self):
@@ -123,11 +137,15 @@ class aplicacion:
         Tipo_Sintactico.imprimirListaErroresSintactico()
         print("\n")
         Tipo_Sintactico.inicio_sintactico()
-        #Tipo_Sintactico.generarHtml_Sintactico()
-        #Tipo_Sintactico.generarErrores_Sintactico()
+        Tipo_Sintactico.generarHtml_Sintactico()
+        Tipo_Sintactico.generarErrores_Sintactico()
         self.salida.delete("1.0", tk.END)
         self.salida.insert(tk.END, Tipo_Sintactico.respuesta)
         self.consola.delete("1.0", tk.END)
+        for error in Tipo_Sintactico.listaErrores_Sintactico:
+            self.consola.insert(tk.END, "----------------------------------------------------------------------\n")
+            self.consola.insert(tk.END, 'TOKEN -> {}  LEXEMA -> {}  FILA -> {}  COLUMNA -> {}  INDICE -> {} \n'.format(error.getTipo(), error.getAuxlex(), error.getFila(), error.getColumna(), error.getIndice()))
+            self.consola.insert(tk.END, "----------------------------------------------------------------------\n")
         #self.scrolledtext2.config(fg="yellow")
 
         
@@ -137,26 +155,26 @@ aplicacion1=aplicacion()
 #Prueba = AnalizadorLexico()
 #PruebaCss = AnalizadorLexicoCss()
 #prueba_html = AnalizadorLexicoHtml()
-prueba_Sintactico = AnalizadorLexicoSintactico()
+#prueba_Sintactico = AnalizadorLexicoSintactico()
 #prueba_html.analizarArchivoHtml("Ejemplo_Html.html")
 #PruebaCss.analizarArchivoCss("LexicoCss.css")
 #Prueba.analizarArchivo("ejemplo.js")
-prueba_Sintactico.analizarArchivoSintactico("ejemplosintactico.Rmt")
-print("----------------Tabla de Tokens Arbol----------------")
+#prueba_Sintactico.analizarArchivoSintactico("ejemplosintactico.Rmt")
+#print("----------------Tabla de Tokens Arbol----------------")
 #Prueba.analizarArchivo("ejemplo.js")
 #Prueba.analizarArchivo("Entrada.js")
 #prueba_html.imprimirListaTokensHtml()
-prueba_Sintactico.imprimirListaErroresSintactico()
-prueba_Sintactico.inicio_sintactico()
+#prueba_Sintactico.imprimirListaErroresSintactico()
+#prueba_Sintactico.inicio_sintactico()
 #Prueba.imprimirListaTokensArbol()
 #PruebaCss.imprimirListaTokensCss()
 #print("\n")
-print("----------------Tabla de Errores----------------")
+#print("----------------Tabla de Errores----------------")
 #Prueba.imprimirListaErrores()
 #PruebaCss.imprimirListaErroresCss()
 #prueba_html.imprimirListaErroresHtml()
-prueba_Sintactico.imprimirListaTokensSintactico()
-print("\n")
+#prueba_Sintactico.imprimirListaTokensSintactico()
+#print("\n")
 
 #ded = 12
 #print("hola",ded,"adios")

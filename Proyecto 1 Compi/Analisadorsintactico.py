@@ -249,7 +249,20 @@ class AnalizadorLexicoSintactico:
             print("Token " + item.getAuxlex() + " correcto")
             self.recorrido += 1
             item = lista[self.recorrido]
-            self.instrucciones()   
+            self.instrucciones()
+        elif item.getTipo() == "Parentesis Abierto":
+            print("Token " + item.getAuxlex() + " correcto")
+            self.recorrido += 1
+            item = lista[self.recorrido]
+            self.instrucciones()
+            item = lista[self.recorrido]
+            if item.getTipo() == "Parentesis Cerrado":
+                print("Token " + item.getAuxlex() + " correcto")
+                self.recorrido += 1
+                item = lista[self.recorrido]
+                self.instrucciones2()
+            else:
+                print("Error Sintactico se esperaba )")   
 
     def instrucciones2(self):
         lista = self.lista_de_tokens_Sintactico 
@@ -267,6 +280,22 @@ class AnalizadorLexicoSintactico:
                 self.instrucciones()
             else:
                 print("Error Sintactico se esperaba )")
+        elif item.getTipo() == "Numero Entero":
+                print("Token " + item.getAuxlex() + " correcto")
+                self.recorrido += 1
+                item = lista[self.recorrido]
+                self.signo()
+                item = lista[self.recorrido]
+        elif item.getTipo() == "Numero Decimal":
+                print("Token " + item.getAuxlex() + " correcto")
+                self.recorrido += 1
+                item = lista[self.recorrido]
+                self.signo()
+        elif item.getTipo() == "Variable":
+                print("Token " + item.getAuxlex() + " correcto")
+                self.recorrido += 1
+                item = lista[self.recorrido]
+                self.signo()
         elif item.getTipo() == "Signo Mas":
             print("Token " + item.getAuxlex() + " correcto")
             self.recorrido += 1
@@ -286,7 +315,16 @@ class AnalizadorLexicoSintactico:
             print("Token " + item.getAuxlex() + " correcto")
             self.recorrido += 1
             item = lista[self.recorrido]
-            self.instrucciones()   
+            self.instrucciones()  
+
+    def error_sin(self):
+        lista = self.lista_de_tokens_Sintactico 
+        item = lista[self.recorrido]
+        if item.getAuxlex() == "!":
+            print("Token " + item.getAuxlex() + " correcto")
+            self.recorrido += 1
+            item = lista[self.recorrido]
+            self.instrucciones()
 
     def generarHtml_Sintactico(self):
         file = open ("C:/Reportes_Compi/Lista_Tokens_Sintactico.html", "w")
